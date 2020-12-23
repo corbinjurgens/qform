@@ -1,0 +1,31 @@
+{
+    "name": "corbinjurgens/qform",
+    "description": "Quickly create inputs. Made for Bootstrap 4 but you can alter the template",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Corbin Jurgens",
+            "email": "corbinjurgens@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Corbinjurgens\\QForm\\": "src/"
+        },
+        "files": [
+        ]
+    },
+	"extra": {
+    "laravel": {
+        "providers": [
+            "Corbinjurgens\\QForm\\ServiceProvider"
+        ],
+        "aliases": {
+			"QForm": "Corbinjurgens\\QForm\\QFormFacade"
+        }
+    }
+}
+}

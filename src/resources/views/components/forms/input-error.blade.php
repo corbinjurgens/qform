@@ -1,0 +1,1 @@
+@if ($message)<span class="text-{{ $type }}@if ($block) d-block @endif">{{ $message }}</span>@endif
