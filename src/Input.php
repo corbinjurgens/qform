@@ -20,8 +20,8 @@ class Input extends Component
 	public $variables = NULL;
 	public $surround = NULL;
 	public $hideValue = NULL;
-	
-    public function __construct($form, $type = 'text', $text = NULL, $guide = NULL, $variables = NULL, $surround = True, $hideValue = False)
+	public $required = False;
+    public function __construct($form, $type = 'text', $text = NULL, $guide = NULL, $variables = NULL, $surround = True, $hideValue = False, $required = False)
     {
         $this->form = $form;
         $this->type = $type;
@@ -30,6 +30,7 @@ class Input extends Component
         $this->variables = $variables;
         $this->surround = $surround;
 		$this->hideValue = $hideValue;
+		$this->required = $required;
 		
 		/**
 		 * Guide
@@ -50,6 +51,6 @@ class Input extends Component
      */
     public function render()
     {
-        return view(S::$name . '::components.forms.input');
+        return view(S::$name . '::components.forms.input' . $this->form->get_template());
     }
 }

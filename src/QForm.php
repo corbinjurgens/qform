@@ -2,11 +2,35 @@
 
 namespace Corbinjurgens\QForm;
 /**
- * Get the various form things easily. For the whole form, first set data and text if any with init. 
- * Then for each value set key with input. Then you can each each of the input things.
+ * Get the various form things easily. For the whole form, first set data and text if any with ::init. 
+ * Then for each value set key with ::input. Then you can each each of the input things.
  * CJ 2020-11-26
  */
 class QForm {
+	/**
+	 * Change the global templates used for the current script execution. Normally it will look for input.blade.php for example, but if you set a template like "alt" it will look for input_alt.blade.php
+	 */
+	protected $global_template = null;
+	function set_global_template($suffix){
+		$this->global_template = $suffix;
+		return $this;
+	}
+	/**
+	 * Set the templates used for the current class instance. Normally it will look for input.blade.php for example, but if you set a template like "alt" it will look for input_alt.blade.php
+	 */
+	protected $current_template = null;
+	
+	function get_template(){
+		$suffix = $this->current_template;
+		if ($suffix){
+			return '_' . $suffix;
+		}
+		$suffix = $this->global_template;
+		if ($suffix){
+			return '_' . $suffix;
+		}
+		return '';
+	}
 	/**
 	 * Model data
 	 */
@@ -25,11 +49,12 @@ class QForm {
 	 * Errors from request
 	 */
 	protected $errors = NULL;
-	function __construct($curr_data = NULL, $errors = NULL, $text = NULL){
+	function __construct($curr_data = NULL, $errors = NULL, $text = NULL, $template_suffix = null){
 		$this->curr_data = $curr_data;
 		$this->curr_data_exists = ($curr_data == True);
 		$this->errors = $errors;
 		$this->text = $text;
+		$this->current_template = $template_suffix;
 	}
 	static function init($curr_data = NULL, $errors = NULL, $text = 'columns'){
 		return new self($curr_data, $errors, $text);

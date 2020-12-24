@@ -39,6 +39,7 @@ class ServiceProvider extends BaseServiceProvider
         $this->loadViewComponentsAs(self::$name, [
 			Error::class,
 			Input::class,
+			Submit::class,
 		]);
 	   $this->loadViewsFrom(__DIR__.'/resources/views', self::$name);
 		    $this->publishes([
