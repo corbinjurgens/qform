@@ -36,6 +36,10 @@
 			</div>
 		@endforeach
 		</fieldset>
+	@elseif ($type == 'file')
+		<label for="input-{{ $form->id() }}">{{ $text ?? $form->text() }}@if ($required) <span class="text-danger">*</span> @endif</label>
+		<input @if ($required) required @endif type="{{ $type }}" class="form-control-file" name="{{ $form->id() }}" id="input-{{ $form->id() }}" aria-invalid="@if ($form->error()){{'true'}}@else{{'false'}} @endif" aria-describedby="{{ $form->id() }}-help">
+	
 	@else
 		
 		<label for="input-{{ $form->id() }}">{{ $text ?? $form->text() }}@if ($required) <span class="text-danger">*</span> @endif</label>
