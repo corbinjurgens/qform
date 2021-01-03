@@ -10,10 +10,9 @@ class QForm {
 	/**
 	 * Change the global templates used for the current script execution. Normally it will look for input.blade.php for example, but if you set a template like "alt" it will look for input_alt.blade.php
 	 */
-	protected $global_template = null;
-	function set_global_template($suffix){
-		$this->global_template = $suffix;
-		return $this;
+	protected static $global_template = null;
+	static function set_global_template($suffix){
+		self::$global_template = $suffix;
 	}
 	/**
 	 * Set the templates used for the current class instance. Normally it will look for input.blade.php for example, but if you set a template like "alt" it will look for input_alt.blade.php
@@ -25,7 +24,7 @@ class QForm {
 		if ($suffix){
 			return '_' . $suffix;
 		}
-		$suffix = $this->global_template;
+		$suffix = self::$global_template;
 		if ($suffix){
 			return '_' . $suffix;
 		}
@@ -49,23 +48,32 @@ class QForm {
 	 * Errors from request
 	 */
 	protected $errors = NULL;
-	function __construct($curr_data = NULL, $errors = NULL, $text = NULL, $template_suffix = null){
+	function __construct($curr_data = NULL, $errors = NULL, $text = NULL, $template_suffix = NULL){
 		$this->curr_data = $curr_data;
 		$this->curr_data_exists = ($curr_data == True);
 		$this->errors = $errors;
 		$this->text = $text;
 		$this->current_template = $template_suffix;
 	}
-	static function init($curr_data = NULL, $errors = NULL, $text = 'columns'){
-		return new self($curr_data, $errors, $text);
+	static function init($curr_data = NULL, $errors = NULL, $text = 'columns', $template_suffix = NULL){
+		return new self($curr_data, $errors, $text, $template_suffix);
 	}
 	/**
-	 * Resolve to a particular input of the instance, and also clear any input specific settings such as input.
+	 * Resolve to a particular input of the instance, and also clear any input specific settings such as default.
 	 */
 	function input($key){
 		$this->default = NULL;
 		$this->alt_text = NULL;
+		$this->required = NULL;
 		$this->key = $key;
+		return $this;
+	}
+	/**
+	 * Set requuired
+	 */
+	protected $required = NULL;
+	function required($required = True){
+		$this->required = $required;
 		return $this;
 	}
 	/**
@@ -90,6 +98,14 @@ class QForm {
 	}
 	
 	
+	/**
+	 * Get various datas
+	 *
+	 *
+	 */
+	function is_required(){
+		return ($this->required === true);
+	}
 	function id(){
 		return $this->key;
 		

@@ -21,8 +21,11 @@ class Input extends Component
 	public $surround = NULL;
 	public $hideValue = NULL;
 	public $required = False;
-    public function __construct($form, $type = 'text', $text = NULL, $guide = NULL, $variables = NULL, $surround = True, $hideValue = False, $required = False)
+    public function __construct($form, $type = 'text', $text = NULL, $guide = NULL, $variables = NULL, $surround = True, $hideValue = False, $required = null)
     {
+		if ($form === null){
+			$form = QForm::init();
+		}
         $this->form = $form;
         $this->type = $type;
         $this->text = $text;
@@ -30,7 +33,7 @@ class Input extends Component
         $this->variables = $variables;
         $this->surround = $surround;
 		$this->hideValue = $hideValue;
-		$this->required = $required;
+		$this->required = ($required !== NULL ? $required : $form->is_required());
 		
 		/**
 		 * Guide
@@ -51,6 +54,6 @@ class Input extends Component
      */
     public function render()
     {
-        return view(S::$name . '::components.forms.input' . $this->form->get_template());
+        return view(($this->form->get_template() ? '' : S::$name . '::' ) . 'components.forms.input' . $this->form->get_template());
     }
 }
