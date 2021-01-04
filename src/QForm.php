@@ -62,14 +62,19 @@ class QForm {
 	 * Resolve to a particular input of the instance, and also clear any input specific settings such as default.
 	 */
 	function input($key){
+		// clear
 		$this->default = NULL;
 		$this->alt_text = NULL;
 		$this->required = NULL;
+		$this->value_forced = False;
+		$this->value = NULL;
+		
+		// set key
 		$this->key = $key;
 		return $this;
 	}
 	/**
-	 * Set requuired
+	 * Set required
 	 */
 	protected $required = NULL;
 	function required($required = True){
@@ -77,10 +82,20 @@ class QForm {
 		return $this;
 	}
 	/**
+	 * Set value
+	 */
+	protected $value_forced = False;
+	protected $value = NULL;
+	function set_value($value = NULL){
+		$this->value_forced = True;
+		$this->value = $value;
+		return $this;
+	}
+	/**
 	 * Set a default for the currently set input
 	 */
-	protected $value = NULL;
-	function default($value){
+	protected $default = NULL;
+	function default($value = NULL){
 		$this->default = $value;
 		return $this;
 	}
@@ -119,6 +134,7 @@ class QForm {
 		
 		
 	}
+	// TODO __n
 	function guide(){
 		if ($this->alt_text !== NULL){
 			return __n($this->alt_text . '_guide', $replace = [], $locale = null, $fallback = true, $return_key = false);
@@ -139,9 +155,20 @@ class QForm {
 		return NULL;
 	}
 	
-	function value($default = NULL){
-		$value = old($this->key, $this->curr_data ? $this->curr_data->{$this->key} : $this->default);
-		return $value ?? $default ?? '';
+	function value(){
+		if ($this->value_forced === True){
+			return $this->value;
+		}
+		$fallback = 
+		(	
+			$this->value_forced === True ? $this->value : 
+			(
+				$this->curr_data ? $this->curr_data->{$this->key} :
+				$this->default
+			)
+		);
+		$value = old($this->key, $fallback);
+		return $value;
 	}
 	
 
