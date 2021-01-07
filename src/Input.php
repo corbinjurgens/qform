@@ -28,8 +28,11 @@ class Input extends Component
 		}
         $this->form = $form;
         $this->type = $type;
-        $this->text = $text;
-        $this->guide = $guide;
+		if ($this->type == 'json'){
+			$this->form->array_type(true);
+		}
+        $this->text = $text ?? $form->text();
+        $this->guide = $guide ?? $form->guide();
         $this->variables = $variables;
         $this->surround = $surround;
 		$this->hideValue = $hideValue;

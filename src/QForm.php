@@ -68,6 +68,7 @@ class QForm {
 		$this->required = NULL;
 		$this->value_forced = False;
 		$this->value = NULL;
+		$this->array_type = False;
 		
 		// set key
 		$this->key = $key;
@@ -105,11 +106,14 @@ class QForm {
 		$this->alt_text = $key;
 		return $this;
 	}
-	
-	private function _error(){
-		if ($this->errors){
-			return $this->errors->first($this->key);
-		}
+	/**
+	 * When the error should return array as https://laravel.com/docs/8.x/validation#retrieving-all-error-messages-for-a-field
+	 * For example when using a multi dimentional form
+	 */
+	protected $array_type = false;
+	function array_type($array_type = false){
+		$this->array_type = $array_type;
+		return $this;
 	}
 	
 	
@@ -148,17 +152,18 @@ class QForm {
 	}
 	
 	function error(){
-		$error = $this->_error();
-		if ($error){
-			return $error;
+		if ($this->errors){
+			return $this->errors->first($this->key);
 		}
-		return NULL;
+	}
+	function errors_array(){
+		if ($this->array_type === true){
+			$errors = $this->errors->get($this->key . '.*');
+		}
+		return $errors ?? [];
 	}
 	
 	function value(){
-		if ($this->value_forced === True){
-			return $this->value;
-		}
 		$fallback = 
 		(	
 			$this->value_forced === True ? $this->value : 
