@@ -2,6 +2,10 @@
 <input type="{{ $type }}" value="{{ $form->value() }}" name="{{ $form->id() }}" id="input-{{ $form->id() }}">
 @else
 @if ($surround)<div class="form-group @if ($type == 'checkbox' && !is_array($variables)) form-check @endif">@endif
+
+
+	@include('qform::labels', ['labels' => $labels])
+	
 	@if ($type == 'textarea')
 	
 		<label for="input-{{ $form->id() }}">{{ $text }}@if ($required) <span class="text-danger">*</span> @endif</label>

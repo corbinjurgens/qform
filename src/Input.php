@@ -21,7 +21,8 @@ class Input extends Component
 	public $surround = NULL;
 	public $hideValue = NULL;
 	public $required = False;
-    public function __construct($form, $type = 'text', $text = NULL, $guide = NULL, $variables = NULL, $surround = True, $hideValue = False, $required = null)
+	public $labels = [];
+    public function __construct($form, $type = 'text', $text = NULL, $guide = NULL, $variables = NULL, $surround = True, $hideValue = False, $required = null, $labels = [])
     {
 		if ($form === null){
 			$form = QForm::init();
@@ -37,6 +38,19 @@ class Input extends Component
         $this->surround = $surround;
 		$this->hideValue = $hideValue;
 		$this->required = ($required !== NULL ? $required : $form->is_required());
+		
+		$process_label = [];
+		foreach($labels as $label){
+			if (is_array($label)){
+				$process_label[] = $label;
+			}else{
+				$process_label[] = [
+					'label' => $label,
+					'class' => null,
+				];
+			}
+		}
+		$this->labels = $process_label;
 		
 		/**
 		 * Guide
