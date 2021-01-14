@@ -16,20 +16,26 @@ class Input extends Component
 	public $form = NULL;
 	public $type = NULL;
 	public $text = NULL;
+	public $alt_type = NULL;
 	public $guide = NULL;
 	public $variables = NULL;
 	public $surround = NULL;
 	public $hideValue = NULL;
 	public $required = False;
 	public $labels = [];
-    public function __construct($form, $type = 'text', $text = NULL, $guide = NULL, $variables = NULL, $surround = True, $hideValue = False, $required = null, $labels = [])
+	public $json = False;
+    public function __construct($form, $type = 'text', $text = NULL, $guide = NULL, $variables = NULL, $surround = True, $hideValue = False, $required = null, $labels = [], $json = false)
     {
 		if ($form === null){
 			$form = QForm::init();
 		}
         $this->form = $form;
         $this->type = $type;
-		if ($this->type == 'json'){
+		$this->json = $json;
+		if ($this->type == 'json' || $this->json === True ){
+			$this->type = 'json';
+			$this->alt_type = $type != 'json' ? $type : null;
+			
 			$this->form->array_type(true);
 		}
         $this->text = $text ?? $form->text();

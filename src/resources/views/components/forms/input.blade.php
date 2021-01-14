@@ -64,9 +64,10 @@
 		--}}
 		<label id="label-{{ $form->id() }}">{{ $text }}@if ($required) <span class="text-danger">*</span> @endif</label>
 		<small id="{{ $form->id() }}-help" class="form-text text-muted"><x-qform-error :form="$form" :message="$form->error()"/>{{ $guide }}</small>
+		
 		<div id="json-{{ $form->id() }}" class="json-input-element" data-errors="{{ json_encode($form->errors_array()) }}" data-json="{{ is_string($form->value()) ? $form->value() : (is_object($form->value()) ? $form->value()->toJson() : json_encode($form->value())) }}" data-mode="{{ is_string($form->value()) ? 'string' : 'array' }}" >
 			<div class="json-pre"></div>
-			<div class="json-content scope-item scope-max scope-container row" data-title="{{ $text }}" data-name="{{ $form->id() }}" aria-labelledby="label-{{ $form->id() }}" aria-describedby="{{ $form->id() }}-help" role="group" data-required="{{$required ? '1' : ''}}"></div>
+			<div class="json-content scope-item scope-max scope-container row" data-type="{{ $alt_type }}" data-title="{{ $text }}" data-name="{{ $form->id() }}" aria-labelledby="label-{{ $form->id() }}" aria-describedby="{{ $form->id() }}-help" role="group" data-required="{{$required ? '1' : ''}}"></div>
 			<div class="json-post"></div>
 			{{-- .json-input-element #json-$name use handlebars or other script to display content here --}}
 		</div>
