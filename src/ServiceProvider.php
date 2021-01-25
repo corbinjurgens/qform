@@ -40,6 +40,7 @@ class ServiceProvider extends BaseServiceProvider
 			Error::class,
 			Input::class,
 			Submit::class,
+			Form::class,
 		]);
 	   $this->loadViewsFrom(__DIR__.'/resources/views', self::$name);
 		    $this->publishes([

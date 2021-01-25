@@ -1,0 +1,1 @@
+@if ($required) <span class="text-danger">*</span>@endif

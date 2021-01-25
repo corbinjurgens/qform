@@ -19,20 +19,20 @@ class Error extends Component
      *
      * @var string
      */
-    public $form;
     public $message;
     public $block;
+    public $template;// suffix
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct($form, $message, $type = 'danger', $block = False)
+    public function __construct($message, $type = 'danger', $block = False, $template = '')
     {
-        $this->form = $form;
         $this->message = $message;
         $this->type = $type;
-		$this->block = $block;
+		$this->block = (bool) $block;
+		$this->template = $template;
     }
 
     /**
@@ -42,6 +42,6 @@ class Error extends Component
      */
     public function render()
     {
-        return view(S::$name . '::components.forms.input-error' . $this->form->get_template());
+        return view(S::$name . '::components.forms.input-error' . $this->template);
     }
 }
