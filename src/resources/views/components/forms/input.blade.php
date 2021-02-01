@@ -48,7 +48,7 @@
 		@endforeach
 		</fieldset>
 	@elseif ($type == 'file')
-		<label @include('qform::label-attr')>{{ $text }}@include('qforms::label-postfix')</label>
+		<label @include('qform::label-attr')>{{ $text }}@include('qform::label-postfix')</label>
 		<input @include('qform::input-attr', ['alt_value' => false, 'class' => 'form-control-file'])>
 	
 	@elseif ($type == 'json')

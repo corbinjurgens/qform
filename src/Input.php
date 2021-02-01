@@ -8,6 +8,7 @@ use Corbinjurgens\QForm\ServiceProvider as S;
 
 class Input extends Component
 {
+	use Shared;
     /**
      * Requires the QForm extension (by CJ)
      *
@@ -27,7 +28,6 @@ class Input extends Component
 	public $required = False;
 	public $labels = [];
 	public $json = False;
-	public $template = False;
 	public $error = null;
 	public $errors = null;
 	
@@ -52,13 +52,13 @@ class Input extends Component
         $this->guide = $guide ?? $form->guide();
         $this->id = $id ?? $form->id();
         $this->name = $name ?? $form->name();
-		$this->basename = !is_null($name) ?  : $form->basename();// in the case that $name is prefixed, such as 'user[email]' then this will get just the email part
+		$this->basename = !is_null($name) ? $this->strip_name($name) : $form->basename();// in the case that $name is prefixed, such as 'user[email]' then this will get just the email part
 
 		$this->hideValue = $hideValue;
 		if ($this->hideValue == false){
 			$this->value = $value ?? $form->value();
 		}
-		$this->template = $template ?? $form->get_template();
+		$this->set_template($template ?? $form->template);
 		
 		$this->required = ($required !== NULL ? $required : $form->is_required());
 		
@@ -105,6 +105,6 @@ class Input extends Component
      */
     public function render()
     {	
-        return view( S::$name . '::' . 'components.forms.input' . $this->template);
+        return view( S::$name . '::' . 'components.forms.input' . $this->template_suffix);
     }
 }

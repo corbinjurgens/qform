@@ -8,6 +8,7 @@ use Corbinjurgens\QForm\ServiceProvider as S;
 
 class Submit extends Component
 {
+	use Shared;
     /**
      * Requires the QForm extension (by CJ)
      *
@@ -18,13 +19,16 @@ class Submit extends Component
 	public $text = NULL;
 	public $id = NULL;
 	public $class = NULL;
-    public function __construct($form, $name = null, $text = 'Submit', $class = null)
+    public function __construct($form = null, $name = null, $text = 'Submit', $class = null, $template = null)
     {
         $this->form = $form;
+		
         $this->name = $name;
         $this->text = $text;
         $this->class = $class;
 		$this->id = 'submit' . ($this->name ? '-' . $this->name : '');
+		
+		$this->set_template($template ?? ($form ? $form->template : null));
 		
 		/**
 		 * Guide
@@ -39,6 +43,6 @@ class Submit extends Component
      */
     public function render()
     {
-        return view(S::$name . '::components.forms.submit' . $this->form->get_template());
+        return view(S::$name . '::components.forms.submit' . $this->template_suffix);
     }
 }

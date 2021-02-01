@@ -7,7 +7,9 @@ use Illuminate\View\Component;
 use Corbinjurgens\QForm\ServiceProvider as S;
 
 class Error extends Component
-{    /**
+{    
+	use Shared;
+	/**
      * The alert type.
      *
      * @var string
@@ -21,18 +23,18 @@ class Error extends Component
      */
     public $message;
     public $block;
-    public $template;// suffix
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct($message, $type = 'danger', $block = False, $template = '')
+    public function __construct($message, $type = 'danger', $block = False, $template = null)
     {
         $this->message = $message;
         $this->type = $type;
 		$this->block = (bool) $block;
-		$this->template = $template;
+		
+		$this->set_template($template);
     }
 
     /**
@@ -42,6 +44,6 @@ class Error extends Component
      */
     public function render()
     {
-        return view(S::$name . '::components.forms.input-error' . $this->template);
+        return view(S::$name . '::components.forms.input-error' . $this->template_suffix);
     }
 }

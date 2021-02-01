@@ -8,6 +8,8 @@ use Illuminate\Support\ViewErrorBag;
  * CJ 2020-11-26
  */
 class QForm {
+	
+	use Shared;
 	/**
 	 * Tool Functions
 	 * --------------
@@ -17,7 +19,7 @@ class QForm {
 	 * Change the global templates used for the current script execution. Normally it will look for input.blade.php for example, but if you set a template like "alt" it will look for input_alt.blade.php
 	 * You could set this in a Service provider, or in a route controller
 	 */
-	protected static $global_template = null;
+	public static $global_template = null;
 	static function set_global_template($suffix){
 		self::$global_template = $suffix;
 	}
@@ -49,7 +51,7 @@ class QForm {
 	/**
 	 * Set the templates used for the current class instance. Normally it will look for input.blade.php for example, but if you set a template like "alt" it will look for input_alt.blade.php
 	 */
-	protected $current_template = null;
+	// now in Shared
 	/**
 	 * Model data
 	 * NULL is ok
@@ -79,7 +81,7 @@ class QForm {
 		$this->curr_data_exists = ($curr_data == True && $curr_data->exists);
 		
 		$this->text = $text;
-		$this->current_template = $template_suffix;
+		$this->set_template($template_suffix);
 		
 		$this->errors = session()->get('errors', app(ViewErrorBag::class));
 	}
@@ -112,18 +114,6 @@ class QForm {
 			$this->text = 'forms.' . $this->table;
 		}
 		return $this;
-	}
-	
-	function get_template(){
-		$suffix = $this->current_template;
-		if ($suffix){
-			return '_' . $suffix;
-		}
-		$suffix = self::$global_template;
-		if ($suffix){
-			return '_' . $suffix;
-		}
-		return '';
 	}
 	/**
 	 * Set prefix so that id() and name() will return 
@@ -280,6 +270,16 @@ class QForm {
 		return $name;
 		
 	}
+	// Like name but used for getting old() so it points with prefix included like 'prefix.name'
+	function name_path(){
+		$name = $this->basename();
+		if (is_array($this->prefix)){
+			$prefix = $this->prefix;
+			$prefix[] = $name;
+			return join('.', $prefix);
+		}
+		return $name;
+	}
 	function text(){
 		if ($this->force_text_mode === true){
 			return $this->alt_text;
@@ -350,7 +350,7 @@ class QForm {
 				$this->default
 			)
 		);
-		$value = old($this->name(), $fallback);
+		$value = old($this->name_path(), $fallback);
 		return $value;
 	}
 	
