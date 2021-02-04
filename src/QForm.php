@@ -132,6 +132,28 @@ class QForm {
 		$this->prefix = $prefix;
 		return $this;
 	}
+	/**
+	 * Change the current data of the form for multiple inputs.
+	 * Such as pointing to a data column array, then accessing it
+	 * Should be an array
+	 */
+	protected $shift_data = null;
+	function value_shift(array $data){
+		$this->shift_data = $data;
+	}
+	function value_reset(){
+		$this->shift_data = null;
+	}
+	/**
+	 * Change text base for longer than just one input, array or string
+	 */
+	protected $shift_text = null;
+	function text_shift($data){
+		$this->shift_text = $data;
+	}
+	function text_reset(){
+		$this->shift_text = null;
+	}
 	
 	/**
 	 * Form init ends
@@ -148,9 +170,10 @@ class QForm {
 		// clear
 		$this->default = NULL;
 		
-		$this->alt_text_mode = false;
+		$this->force_text_mode = false;
 		$this->alt_text = NULL;
 		$this->guide_text = NULL;
+		$this->alt_text_base = NULL;
 		
 		$this->required = NULL;
 		
@@ -201,6 +224,7 @@ class QForm {
 	// Set text used to force text as is (rather than looking to trans() or array)
 	protected $force_text_mode = false;
 	protected $alt_text = NULL;
+	protected $alt_text_base = NULL;
 	protected $guide_text = NULL;
 	function set_text($text, $guide = null){
 		$this->force_text_mode = true;
@@ -208,9 +232,14 @@ class QForm {
 		$this->guide_text = $guide;
 		return $this;
 	}
-	// Alt text used to point to a different text directly as opposed to the parent array (and for guide automatically append _guide to the same key)
+	// Look in same text location as in init $text, but look for different key
 	function alt_text($key){
 		$this->alt_text = $key;
+		return $this;
+	}
+	// Alt text base used to point to an entirely different base eg not the one given in init $text
+	function alt_text_base($key){
+		$this->alt_text_base = $key;
 		return $this;
 	}
 	/**
@@ -285,13 +314,13 @@ class QForm {
 			return $this->alt_text;
 		}
 		$key = $this->alt_text ?? $this->key;
-		if (is_array($this->text)){
-			return isset($this->text[$key]) ? $this->text[$key] : 
+		$text = $this->shift_text ?? $this->alt_text_base ?? $this->text;
+		if (is_array($text)){
+			return isset($text[$key]) ? $text[$key] : 
 			($this->table !== null ? __('columns.' . $this->table . '.'. $key) : null)
 			;
 		}
-		
-		return $this->trans_null($this->text . '.' . $key) ?? 
+		return $this->trans_null($text . '.' . $key) ?? 
 					($this->table !== null ? __('columns.' . $this->table . '.'. $key) : null)
 		;
 	}
@@ -304,7 +333,7 @@ class QForm {
 		$pointer = $key;
 		$target = $this->guides;
 		if ($target === null){
-			$target = $this->text;
+			$target = $this->shift_text ?? $this->alt_text_base ?? $this->text;
 			$pointer .= '_guide';
 		}
 		if (is_array($target)){
@@ -341,13 +370,14 @@ class QForm {
 		
 	}
 	
-	function value(){
+	function value($default = null){
+		$target_data = $this->shift_data ?? $this->curr_data;
 		$fallback = 
 		(	
 			$this->value_forced === True ? $this->value : 
 			(
-				$this->curr_data_exists ? $this->curr_data->{$this->key} :
-				$this->default
+				$this->curr_data_exists ? @$target_data[$this->key] :
+				($default ?? $this->default)
 			)
 		);
 		$value = old($this->name_path(), $fallback);
