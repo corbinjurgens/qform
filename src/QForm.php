@@ -36,12 +36,12 @@ class QForm {
 		if (!is_array($table_array)){
 			$table_array = [];
 		}
-		if ($form_path === null) return $table_array;
+		if ($form_path === null) return \Arr::dot($table_array);
 		$form_array = __($specific_path.$form_path);
 		if (!is_array($form_array)){
 			$form_array = [];
 		}
-		return array_replace($table_array, $form_array);
+		return \Arr::dot(array_replace($table_array, $form_array));
 		
 	}
 	/**
@@ -116,6 +116,11 @@ class QForm {
 		return $this;
 	}
 	/**
+	 * To be used between inputs, changes are retained unless manualy setting back to null
+	 * or using hard_reset();
+	 */
+	 
+	/**
 	 * Set prefix so that id() and name() will return 
 	 * Does not get reset across multiple inputs, so 
 	 * you must set back to null
@@ -123,7 +128,7 @@ class QForm {
 	 * OR array like ['options', 0] to become options[0][key]
 	 */
 	protected $prefix = null;
-	function prefix($prefix){
+	function prefix($prefix = null){
 		if ($prefix !== null){
 			if (!is_array($prefix)){
 				$prefix = [$prefix];
@@ -135,10 +140,10 @@ class QForm {
 	/**
 	 * Change the current data of the form for multiple inputs.
 	 * Such as pointing to a data column array, then accessing it
-	 * Should be an array
+	 * Should be an array or object
 	 */
 	protected $shift_data = null;
-	function value_shift(array $data){
+	function value_shift($data){
 		$this->shift_data = $data;
 	}
 	function value_reset(){
@@ -156,18 +161,27 @@ class QForm {
 	}
 	
 	/**
+	 * The above functions such as text_shift dont get reset between inputs.
+	 * You can reset all here
+	 */
+	function hard_reset(){
+		$this->prefix = null;
+		$this->shift_data = null;
+		$this->shift_text = null;
+	}
+	
+	/**
 	 * Form init ends
 	 * --------------
 	 * The rest are functions per input,
 	 * Such as setting current input, and 
 	 * getting values for it
 	 */
-	 
+	
 	/**
-	 * Resolve to a particular input of the instance, and also clear any input specific settings such as default.
+	 * Clear values between inputs
 	 */
-	function input($key){
-		// clear
+	 function reset(){
 		$this->default = NULL;
 		
 		$this->force_text_mode = false;
@@ -182,6 +196,14 @@ class QForm {
 		$this->value = NULL;
 		
 		$this->array_type = False;
+	 }
+	 
+	/**
+	 * Resolve to a particular input of the instance, and also clear any input specific settings such as default.
+	 */
+	function input($key){
+		// clear
+		$this->reset();
 		
 		// set key
 		$this->key = $key;
@@ -359,12 +381,12 @@ class QForm {
 	
 	function error(){
 		if ($this->errors){
-			return $this->errors->first($this->name());
+			return $this->errors->first($this->name_path());
 		}
 	}
 	function errors_array(){
 		if ($this->array_type === true){
-			$errors = $this->errors->get($this->name() . '.*');
+			$errors = $this->errors->get($this->name_path() . '.*');
 		}
 		return $errors ?? [];
 		
@@ -376,7 +398,7 @@ class QForm {
 		(	
 			$this->value_forced === True ? $this->value : 
 			(
-				$this->curr_data_exists ? @$target_data[$this->key] :
+				$this->curr_data_exists && isset($target_data[$this->key]) ? @$target_data[$this->key] :
 				($default ?? $this->default)
 			)
 		);
