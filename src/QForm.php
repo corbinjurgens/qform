@@ -336,7 +336,7 @@ class QForm {
 			return $this->alt_text;
 		}
 		$key = $this->alt_text ?? $this->key;
-		$text = $this->shift_text ?? $this->alt_text_base ?? $this->text;
+		$text = $this->alt_text_base ?? $this->shift_text ?? $this->text;
 		if (is_array($text)){
 			return isset($text[$key]) ? $text[$key] : 
 			($this->table !== null ? __('columns.' . $this->table . '.'. $key) : null)
