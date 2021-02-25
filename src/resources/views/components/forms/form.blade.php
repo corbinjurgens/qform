@@ -8,8 +8,10 @@
 	
 	@if ($enctype) enctype="{{$enctype}}" @endif 
 >
-	@if ($csrf)	@csrf @endif
-	@method($_method)
+	@if($method != 'GET')
+		@if ($csrf)	@csrf @endif
+		@method($_method)
+	@endif
 	
 	{!! $slot !!}
 </form>
