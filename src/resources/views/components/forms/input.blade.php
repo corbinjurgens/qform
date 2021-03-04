@@ -5,9 +5,6 @@
 	@if ($type == 'checkbox' && !is_array($variables)) form-check @endif">@endif
 
 	
-	@php
-		if(is_numeric($value)) $value = intval($value);
-	@endphp
 
 	@include('qform::labels')
 	
@@ -21,6 +18,12 @@
 		
 		<label @include('qform::label-attr')>{{ $text }}@include('qform::label-postfix')</label>
 		<select @include('qform::input-attr', ['alt_value' => false, 'class' => 'form-control'])>
+			@php
+				if(is_numeric($value)){
+					$value = $value + 0;
+				}
+			@endphp
+			
 			@foreach ($variables as $key => $variable)
 				<option value="{{ $key }}" @if ($key === ($value)) selected @endif>{{ $variable }}</option>
 			@endforeach
@@ -30,6 +33,11 @@
 	{{-- Value always 1, acting as boolean --}}
 		<fieldset role="radiogroup" aria-labelledby="{{ $id }}-group">
 		<legend class="col-form-label" id="{{ $id }}-group">{{ $text }}@include('qform::label-postfix')</legend>
+			@php
+				if(is_numeric($value)){
+					$value = $value + 0;
+				}
+			@endphp
 		
 		@foreach($variables as $key => $variable)
 			<div class="form-check form-check-inline">
@@ -46,6 +54,11 @@
 	@elseif ($type == 'radio' && is_array($variables))
 		<fieldset role="radiogroup" aria-labelledby="{{ $id }}-group">
 		<legend class="col-form-label" id="{{ $id }}-group">{{ $text }}@include('qform::label-postfix')</legend>
+			@php
+				if(is_numeric($value)){
+					$value = $value + 0;
+				}
+			@endphp
 		@foreach ($variables as $key => $variable)
 			<div class="form-check">
 				<input class="form-check-input" @if ( ($value) == $key ) checked="" @endif @include('qform::input-attr', ['alt_value' => $key, 'aria_describedby' => $id . '-group', 'class' => 'form-check-input'])>
