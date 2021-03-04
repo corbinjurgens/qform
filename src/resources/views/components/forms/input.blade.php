@@ -1,7 +1,13 @@
 @if ($type == 'hidden')
 <input type="{{ $type }}" value="{{ $value }}" name="{{ $name }}" id="input-{{ $id }}">
 @else
-@if ($surround)<div class="form-group @if ($type == 'checkbox' && !is_array($variables)) form-check @endif">@endif
+@if ($surround)<div class="@if($inline && in_array($type, ['checkbox', 'radio'])) form-check-inline @else form-group @endif
+	@if ($type == 'checkbox' && !is_array($variables)) form-check @endif">@endif
+
+	
+	@php
+		if(is_numeric($value)) $value = intval($value);
+	@endphp
 
 	@include('qform::labels')
 	
@@ -16,7 +22,7 @@
 		<label @include('qform::label-attr')>{{ $text }}@include('qform::label-postfix')</label>
 		<select @include('qform::input-attr', ['alt_value' => false, 'class' => 'form-control'])>
 			@foreach ($variables as $key => $variable)
-				<option value="{{ $key }}" @if ($key == ($value)) selected @endif>{{ $variable }}</option>
+				<option value="{{ $key }}" @if ($key === ($value)) selected @endif>{{ $variable }}</option>
 			@endforeach
 		</select>
 		

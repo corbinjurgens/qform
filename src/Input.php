@@ -30,11 +30,14 @@ class Input extends Component
 	public $json = False;
 	public $error = null;
 	public $errors = null;
+	public $inline = false;
 	
 	public $basename = NULL;
-    public function __construct($form = null, $type = 'text', $id = null, $name = null, $value = null, $text = NULL, $guide = NULL, $variables = NULL, $surround = True, $hideValue = False, $required = null, $labels = [], $json = false, $template = null, $error = null, $errors = null)
+    public function __construct($form = null, $type = 'text', $id = null, $name = null, $value = null, $text = NULL, $guide = NULL, $variables = NULL, $surround = True, $hideValue = False, $required = null, $labels = [], $json = false, $template = null, $error = null, $errors = null, $inline = false)
     {
+		$form_null = false;
 		if ($form === null){
+			$form_null = true;
 			$form = QForm::init();
 		}
         $this->form = $form;
@@ -50,7 +53,7 @@ class Input extends Component
 		$this->errors = $errors ?? $form->errors_array();
         $this->text = $text ?? $form->text();
         $this->guide = $guide ?? $form->guide();
-        $this->id = $id ?? $form->id();
+        $this->id = $id ?? ($form_null ? $name : $form->id());
         $this->name = $name ?? $form->name();
 		$this->basename = !is_null($name) ? $this->strip_name($name) : $form->basename();// in the case that $name is prefixed, such as 'user[email]' then this will get just the email part
 
@@ -77,6 +80,7 @@ class Input extends Component
 			}
 		}
 		$this->labels = $process_label;
+        $this->inline = $inline;
 		
 		/**
 		 * Guide
