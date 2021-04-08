@@ -1,5 +1,5 @@
 @if ($type == 'hidden')
-<input type="{{ $type }}" value="{{ $value }}" name="{{ $name }}" id="input-{{ $id }}">
+<input type="{{ $type }}" value="{{ $value }}" name="{{ $name }}" id="input-{{ $id }}" {{ $attributes }}>
 @else
 @if ($surround)<div class="@if($inline && in_array($type, ['checkbox', 'radio'])) form-check-inline @else form-group @endif
 	@if ($type == 'checkbox' && !is_array($variables)) form-check @endif">@endif

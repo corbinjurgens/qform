@@ -300,25 +300,27 @@ class QForm {
 		
 		
 	}
+	function build_prefix($append_key = false){
+		$name_path = '';
+		$prefix = $this->prefix;
+		if ($append_key === true) $prefix[] = $this->basename();
+		$first = true;
+		foreach($prefix as $part){
+			if ($first === true){
+				$first = false;
+				$name_path .= $part;
+			}else{
+				$name_path .= '['.$part.']';
+			}
+		}
+		return $name_path;
+	}
 	// TODO later I may need to add a way to separate input name from database key
 	function name(){
-		$name = $this->basename();
 		if (is_array($this->prefix)){
-			$name_path = '';
-			$prefix = $this->prefix;
-			$prefix[] = $name;
-			$first = true;
-			foreach($prefix as $part){
-				if ($first === true){
-					$first = false;
-					$name_path .= $part;
-				}else{
-					$name_path .= '['.$part.']';
-				}
-			}
-			return $name_path;
+			return $this->build_prefix(true);
 		}
-		return $name;
+		return $this->basename();
 		
 	}
 	// Like name but used for getting old() so it points with prefix included like 'prefix.name'
@@ -331,11 +333,11 @@ class QForm {
 		}
 		return $name;
 	}
-	function text(){
+	function text($force_key = null){
 		if ($this->force_text_mode === true){
 			return $this->alt_text;
 		}
-		$key = $this->alt_text ?? $this->key;
+		$key = $force_key ?? $this->alt_text ?? $this->key;
 		$text = $this->alt_text_base ?? $this->shift_text ?? $this->text;
 		if (is_array($text)){
 			return isset($text[$key]) ? $text[$key] : 
@@ -347,11 +349,11 @@ class QForm {
 		;
 	}
 	
-	function guide(){
+	function guide($force_key = null){
 		if ($this->force_text_mode === true){
 			return $this->guide_text;
 		}
-		$key = $this->alt_text ?? $this->key;
+		$key = $force_key ?? $this->alt_text ?? $this->key;
 		$pointer = $key;
 		$target = $this->guides;
 		if ($target === null){
