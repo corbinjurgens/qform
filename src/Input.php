@@ -23,6 +23,7 @@ class Input extends Component
 	public $alt_type = NULL;
 	public $guide = NULL;
 	public $variables = NULL;
+	public $variableAttributes = NULL;// Pass array of attributes specific to the variable keys such as ['disabled' => [1 => true]] and itll display as is, anything false or null will be ignored
 	public $surround = NULL;
 	public $hideValue = NULL;
 	public $required = False;
@@ -33,7 +34,7 @@ class Input extends Component
 	public $inline = false;
 	
 	public $basename = NULL;
-    public function __construct($form = null, $type = 'text', $id = null, $name = null, $value = null, $text = NULL, $guide = NULL, $variables = NULL, $surround = True, $hideValue = False, $required = null, $labels = [], $json = false, $template = null, $error = null, $errors = null, $inline = false)
+    public function __construct($form = null, $type = 'text', $id = null, $name = null, $value = null, $text = NULL, $guide = NULL, $variables = NULL, $variableAttributes = NULL, $surround = True, $hideValue = False, $required = null, $labels = [], $json = false, $template = null, $error = null, $errors = null, $inline = false)
     {
 		$form_null = false;
 		if ($form === null){
@@ -66,6 +67,7 @@ class Input extends Component
 		$this->required = ($required !== NULL ? $required : $form->is_required());
 		
         $this->variables = $variables;
+        $this->variableAttributes = $variableAttributes;
         $this->surround = $surround;
 		
 		$process_label = [];
