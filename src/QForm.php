@@ -260,8 +260,8 @@ class QForm {
 		return $this;
 	}
 	// Alt text base used to point to an entirely different base eg not the one given in init $text
-	function alt_text_base($key){
-		$this->alt_text_base = $key;
+	function alt_text_base($base){
+		$this->alt_text_base = $base;
 		return $this;
 	}
 	/**
@@ -284,7 +284,7 @@ class QForm {
 		return ($this->required === true);
 	}
 	/**
-	 * Get ust the name even if it has prefix
+	 * Get just the name even if it has prefix
 	 */
 	function basename(){
 		return $this->name ?? $this->key;
