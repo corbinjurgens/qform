@@ -95,6 +95,15 @@ class Input extends Component
 		 * hide-value: for when the form would access the form by defaultl but you dont want it to. Currently only affective for textarea, and normal input types
 		 */
     }
+	
+	/**
+	 * If the name is passed directly, we will need to check it is not an array,
+	 * and if it is, get the basename
+	 *
+	 * TODO use "/.*(?<!\\)\[(.+?)(?<!\\)\]/" to get last 
+	 *
+	 * @param string|null $name
+	 */
 	public static function strip_name($name){
 		$start = strrpos($name, '[',);
 		if ($start === false){
