@@ -8,12 +8,8 @@ use Corbinjurgens\QForm\ServiceProvider as S;
 
 class Input extends Component
 {
-	use Shared;
-    /**
-     * Requires the QForm extension (by CJ)
-     *
-     * @return void
-     */
+	use Concerns\Template;
+	
 	public $form = NULL;
 	public $type = NULL;
 	public $id = NULL;
@@ -39,7 +35,7 @@ class Input extends Component
 		$form_null = false;
 		if ($form === null){
 			$form_null = true;
-			$form = QForm::init();
+			$form = QForm::new();
 		}
         $this->form = $form;
         $this->type = $type;
@@ -48,23 +44,23 @@ class Input extends Component
 			$this->type = 'json';
 			$this->alt_type = $type != 'json' ? $type : null;
 			
-			$this->form->array_type(true);
+			$this->form->arrayType(true);
 		}
-		$this->error = $error ?? $form->error();
-		$this->errors = $errors ?? $form->errors_array();
-        $this->text = $text ?? $form->text();
-        $this->guide = $guide ?? $form->guide();
-        $this->id = $id ?? ($form_null ? $name : $form->id());
-        $this->name = $name ?? $form->name();
-		$this->basename = !is_null($name) ? $this->strip_name($name) : $form->basename();// in the case that $name is prefixed, such as 'user[email]' then this will get just the email part
+		$this->error = $error ?? $form->getError();
+		$this->errors = $errors ?? $form->getErrorArray();
+        $this->text = $text ?? $form->getText();
+        $this->guide = $guide ?? $form->getGuide();
+        $this->id = $id ?? ($form_null ? $name : $form->getId());
+        $this->name = $name ?? $form->getName();
+		$this->basename = !is_null($name) ? $this->stripName($name) : $form->getBasename();// in the case that $name is prefixed, such as 'user[email]' then this will get just the email part
 
 		$this->hideValue = $hideValue;
 		if ($this->hideValue == false){
-			$this->value = $value ?? $form->value();
+			$this->value = $value ?? $form->getValue();
 		}
-		$this->set_template($template ?? $form->template);
+		$this->template($template ?? $form->getTemplateSuffix());
 		
-		$this->required = ($required !== NULL ? $required : $form->is_required());
+		$this->required = ($required ?? $form->getRequired());
 		
         $this->variables = $variables;
         $this->variableAttributes = $variableAttributes;
@@ -104,7 +100,7 @@ class Input extends Component
 	 *
 	 * @param string|null $name
 	 */
-	public static function strip_name($name){
+	public static function stripName($name){
 		$start = strrpos($name, '[',);
 		if ($start === false){
 			return $name;
@@ -120,6 +116,6 @@ class Input extends Component
      */
     public function render()
     {	
-        return view( S::$name . '::' . 'components.forms.input' . $this->template_suffix);
+        return view( S::$name . '::' . 'components.forms.input' . $this->getTemplate());
     }
 }

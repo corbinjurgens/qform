@@ -1,7 +1,7 @@
 @if ((isset($loop) && $loop->first) || (!isset($loop)))
 	@if ($required) required @endif
 	aria-required="{{ $required ? 'true' : 'false' }}"
-	aria-invalid="{{ $form->error() ? 'true' : 'false' }}"
+	aria-invalid="{{ $error ? 'true' : 'false' }}"
 @endif
 
 @if(isset($loop) && is_array($variableAttributes))
@@ -14,6 +14,7 @@
 
 type="{{ $type }}"
 name="{{ (isset($alt_name) ? $alt_name : $name)}}"
+{{-- Alt value used when including loops etc. Or textarea is set as false meaning dont show value at all --}}
 @if(($alt_value ?? null) !== false)value="{{ (isset($alt_value) ? $alt_value : $value)}}"@endif
 @if(($aria_describedby ?? null) !== false)aria-describedby="{{ ($aria_describedby ?? null) ? $aria_describedby : $id . '-help' }}"@endif
 id="input-{{ $id }}{{ isset($loop) ? '-' . $loop->iteration : '' }}" 

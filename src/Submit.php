@@ -8,7 +8,7 @@ use Corbinjurgens\QForm\ServiceProvider as S;
 
 class Submit extends Component
 {
-	use Shared;
+	use Concerns\Template;
     /**
      * Requires the QForm extension (by CJ)
      *
@@ -28,7 +28,7 @@ class Submit extends Component
         $this->class = $class;
 		$this->id = 'submit' . ($this->name ? '-' . $this->name : '');
 		
-		$this->set_template($template ?? ($form ? $form->template : null));
+		$this->template($template ?? ($form ? $form->template : null));
 		
 		/**
 		 * Guide
@@ -43,6 +43,6 @@ class Submit extends Component
      */
     public function render()
     {
-        return view(S::$name . '::components.forms.submit' . $this->template_suffix);
+        return view(S::$name . '::components.forms.submit' . $this->getTemplate());
     }
 }

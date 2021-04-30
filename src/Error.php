@@ -8,7 +8,7 @@ use Corbinjurgens\QForm\ServiceProvider as S;
 
 class Error extends Component
 {    
-	use Shared;
+	use Concerns\Template;
 	/**
      * The alert type.
      *
@@ -34,7 +34,7 @@ class Error extends Component
         $this->type = $type;
 		$this->block = (bool) $block;
 		
-		$this->set_template($template);
+		$this->template($template);
     }
 
     /**
@@ -44,6 +44,6 @@ class Error extends Component
      */
     public function render()
     {
-        return view(S::$name . '::components.forms.input-error' . $this->template_suffix);
+        return view(S::$name . '::components.forms.input-error' . $this->getTemplate());
     }
 }
