@@ -24,7 +24,7 @@
             "Corbinjurgens\\QForm\\ServiceProvider"
         ],
         "aliases": {
-			"QForm": "Corbinjurgens\\QForm\\QFormFacade"
+			"QForm": "Corbinjurgens\\QForm\\Facade"
         }
     }
 }
