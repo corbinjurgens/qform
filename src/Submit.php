@@ -19,14 +19,14 @@ class Submit extends Component
 	public $text = NULL;
 	public $id = NULL;
 	public $class = NULL;
-    public function __construct($form = null, $name = null, $text = 'Submit', $class = null, $template = null)
+    public function __construct($form = null, $name = null, $text = 'Submit', $id = null, $class = null, $template = null)
     {
         $this->form = $form;
 		
         $this->name = $name;
         $this->text = $text;
         $this->class = $class;
-		$this->id = 'submit' . ($this->name ? '-' . $this->name : '');
+		$this->id = $id ?? 'submit-btn' . ($this->name ? '-' . $this->name : '');
 		
 		$this->set_template($template ?? ($form ? $form->template : null));
 		
