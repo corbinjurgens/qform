@@ -126,7 +126,7 @@ trait PerInputGet
 	}
 	
 	protected function _getTextTable($key, $guide = false){
-		$function = $guide ? '__' : [self::class, 'transNull'];
+		$function = !$guide ? '__' : [self::class, 'transNull'];
 		return (
 			$this->table !== null
 			? call_user_func( $function, 'columns.' . $this->table . '.'. $key . ($guide ? '_guide' : '') )
@@ -177,7 +177,7 @@ trait PerInputGet
 		// If no guides, it means look to normal text
 		// instead with _guide suffix on key
 		if ($target === null){
-			$target = $this->shift_text ?? $this->alt_text_base ?? $this->text;
+			$target = $this->alt_text_base ?? $this->shift_text ?? $this->text;
 			$pointer .= '_guide';
 		}
 		
