@@ -1,1 +1,1 @@
-@if ($message)<span class="text-{{ $type }}@if ($block) d-block @endif">{{ $message }}</span>@endif
+@if($message)<span {{ $attributes->merge(['class' => 'text-' . $type]) }}>{{ $message }}</span>@endif

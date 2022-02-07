@@ -1,10 +1,6 @@
 <form
-	@if ($id) id="{{$id}}" @endif
-	@if ($class) class="{{$class}}" @endif
-	
-	@if ($action) action="{{$action}}" @endif
-	@if ($method) method="{{$method}}" @endif 
-	@if ($attr) {{$attr}} @endif 
+	{{ $attributes }}
+	@if ($method) method="{{$method}}" @endif
 	
 	@if ($enctype) enctype="{{$enctype}}" @endif 
 >
@@ -14,4 +10,5 @@
 	@endif
 	
 	{!! $slot !!}
+	
 </form>

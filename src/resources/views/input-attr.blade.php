@@ -1,6 +1,6 @@
 @if ((isset($loop) && $loop->first) || (!isset($loop)))
-	@if ($required) required @endif
-	aria-required="{{ $required ? 'true' : 'false' }}"
+	@if ($attributes->has('required')) required @endif
+	aria-required="{{ $attributes->has('required') ? 'true' : 'false' }}"
 	aria-invalid="{{ $error ? 'true' : 'false' }}"
 @endif
 
@@ -13,13 +13,9 @@
 @endif
 
 type="{{ $type }}"
-name="{{ (isset($alt_name) ? $alt_name : $name)}}"
+name="{{ $name }}"
 {{-- Alt value used when including loops etc. Or textarea is set as false meaning dont show value at all --}}
 @if(($alt_value ?? null) !== false)value="{{ (isset($alt_value) ? $alt_value : $value)}}"@endif
-@if(($aria_describedby ?? null) !== false)aria-describedby="{{ ($aria_describedby ?? null) ? $aria_describedby : $id . '-help' }}"@endif
-id="input-{{ $id }}{{ isset($loop) ? '-' . $loop->iteration : '' }}" 
-class="{{ $class ?? '' }}
-input-{{$basename}} 
-@if ($required) required @endif 
-{{ $attributes->get('class') }}" 
-{{ $attributes->except('class') }}
+@if(($aria_describedby ?? null) !== false)aria-describedby="{{ ($aria_describedby ?? null) ? $aria_describedby : $attributes->get('id', $id_fallback) }}-help"@endif
+
+{{ $attributes->class(['input-' . $basename, 'required' => $attributes->has('required'), $class ?? '' => isset($class)])->merge(['id' => 'input-' . $id_fallback]) }}

@@ -1,10 +1,12 @@
 <?php
 
-namespace Corbinjurgens\QForm;
+namespace Corbinjurgens\QForm\Components;
 
 use Illuminate\View\Component;
 
 use Corbinjurgens\QForm\ServiceProvider as S;
+
+use Corbinjurgens\QForm\Concerns;
 
 class Submit extends Component
 {

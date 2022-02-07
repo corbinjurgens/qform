@@ -1,23 +1,23 @@
 <?php
 
-namespace Corbinjurgens\QForm;
+namespace Corbinjurgens\QForm\Components;
 
 use Illuminate\View\Component;
 
+use Corbinjurgens\QForm\Concerns;
+
 class Form extends Component
 {
-	public $id = null;
-	public $class = null;
+
 	public $_method = null;
-	public $action = null;
+	
+	public $method = null;
 	
 	public $attr = null;
 	
 	public $enctype = null;
 	
 	public $csrf = null;
-	
-	public $method = null;
 	
 	const POST_METHODS = [
 		'PUT', 'PATCH', 'DELETE'
@@ -30,39 +30,27 @@ class Form extends Component
 	
     public function __construct
 	(
-		$id = null, $class = null, $method = 'POST', $action = null,
+		$method = 'POST',
 		$attr = null,
 		$enctype = 'multipart/form-data',
 		$csrf = true
 	)
     {
-		$this->id = $id;
-		$this->class = $class;
-		$this->_method = $method;
-		$this->action = $action;
+
+		// Form method, accepts put, patch, or delete too, and will automatically set form to post
+		$this->_method = strtoupper($method);// true method
+		$this->method = $this->_method;// form method
+		if ( in_array($this->method, self::POST_METHODS) ){
+			$this->method = 'POST';
+		}
 		
 		$this->attr = $attr;
 		
-		
-		/**
-		 * Auto set method to POST if its not supported by HTML
-		 */
-		if ( in_array($method, self::POST_METHODS) ){
-			$method = 'POST';
-		}
-		$this->method = $method;
-		
-		if ($method == 'POST'){
+		if ($this->method == 'POST'){
 			$this->enctype = $enctype;
 		}
-		
-		
-		
+
 		$this->csrf = $csrf;
-		
-		
-		
-		
 		
     }
 

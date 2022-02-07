@@ -1,10 +1,12 @@
 <?php
 
-namespace Corbinjurgens\QForm;
+namespace Corbinjurgens\QForm\Components;
 
 use Illuminate\View\Component;
 
 use Corbinjurgens\QForm\ServiceProvider as S;
+
+use Corbinjurgens\QForm\Concerns;
 
 class Error extends Component
 {    
@@ -22,17 +24,16 @@ class Error extends Component
      * @var string
      */
     public $message;
-    public $block;
+
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct($message, $type = 'danger', $block = False, $template = null)
+    public function __construct($message, $type = 'danger', $template = null)
     {
         $this->message = $message;
         $this->type = $type;
-		$this->block = (bool) $block;
 		
 		$this->template($template);
     }

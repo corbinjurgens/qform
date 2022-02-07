@@ -4,7 +4,10 @@ namespace Corbinjurgens\QForm;
 
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
-
+use Corbinjurgens\QForm\Components\Error;
+use Corbinjurgens\QForm\Components\Input;
+use Corbinjurgens\QForm\Components\Submit;
+use Corbinjurgens\QForm\Components\Form;
 
 class ServiceProvider extends BaseServiceProvider
 {
@@ -30,17 +33,17 @@ class ServiceProvider extends BaseServiceProvider
     public function boot()
     {
 		
-        $this->loadViewComponentsAs(self::$name, [
-			Error::class,
-			Input::class,
-			Submit::class,
-			Form::class,
-		]);
-		$this->loadViewsFrom(__DIR__.'/resources/views', self::$name);
+      $this->loadViewComponentsAs(self::$name, [
+        Error::class,
+        Input::class,
+        Submit::class,
+        Form::class,
+      ]);
+		  $this->loadViewsFrom(__DIR__.'/resources/views', self::$name);
 	   
-		$this->publishes([
-			__DIR__.'/resources/views' => resource_path('views/vendor/' . self::$name),
-		], self::$name . '-views');
+      $this->publishes([
+        __DIR__.'/resources/views' => resource_path('views/vendor/' . self::$name),
+      ], self::$name . '-views');
 	   
 	   
 	 

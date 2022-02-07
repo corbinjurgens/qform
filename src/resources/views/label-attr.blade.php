@@ -1,1 +1,1 @@
-for="input-{{ $id }}{{ isset($loop) ? '-' . $loop->iteration : '' }}"
+for="{{ $attributes->get('id', 'input-' . $id_fallback) }}"

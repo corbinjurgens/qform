@@ -1,1 +1,1 @@
-@if ($required) <span class="text-danger">*</span>@endif
+@if ($attributes->has('required')) <span class="text-danger">*</span>@endif

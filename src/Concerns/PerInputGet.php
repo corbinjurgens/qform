@@ -196,28 +196,6 @@ trait PerInputGet
 	}
 	
 	/**
-	 * Get single error for current input
-	 *
-	 */
-	public function getError(){
-		if ($this->errors){
-			return $this->errors->first($this->getNameDot());
-		}
-	}
-	
-	/**
-	 * Get error array for current input
-	 *
-	 */
-	public function getErrorArray(){
-		if ($this->array_type === true){
-			$errors = $this->errors->get($this->getNameDot() . '.*');
-		}
-		return $errors ?? [];
-		
-	}
-	
-	/**
 	 * Get current inputs value, optionally pass a $default
 	 *
 	 * @param null|mixed $default Only used if the data/Model does not exist

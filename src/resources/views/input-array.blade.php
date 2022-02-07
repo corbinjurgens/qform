@@ -6,9 +6,9 @@ data-name raw name, useful if there is prefix used in normal name like name="hel
 data-json json or string
 data-mode 'array' or 'string'
 --}}
-<div id="json-{{ $id }}" class="json-input-element" data-errors="{{ json_encode($errors) }}" data-json="{{ is_string($value) ? $value : (is_object($value) ? $value->toJson() : json_encode($value)) }}" data-mode="{{ is_string($value) ? 'string' : 'array' }}" >
+<div id="json-{{ $attributes->get('id', $id_fallback) }}" class="json-input-element" data-errors="{{ json_encode($errors) }}" data-json="{{ is_object($value) ? $value->toJson() : json_encode($value) }}" data-mode="{{ is_string($value) ? 'string' : 'array' }}" >
 	<div class="json-pre scope-container-pre"></div>
-	<div class="json-content scope-item scope-max scope-container row" data-type="{{ $alt_type }}" data-title="{{ $text }}" data-name="{{ $name }}" aria-labelledby="label-{{ $id }}" aria-describedby="{{ $id }}-help" role="group" data-required="{{$required ? '1' : ''}}"></div>
+	<div class="json-content scope-item scope-max scope-container row" data-type="{{ $alt_type ?? $type }}" data-title="{{ $title }}" data-name="{{ $name }}" aria-labelledby="label-{{ $attributes->get('id', $id_fallback) }}" aria-describedby="{{ $attributes->get('id', $id_fallback) }}-help" role="group" data-required="{{ $attributes->has('required') ? '1' : ''}}"></div>
 	<div class="json-post scope-container-post"></div>
 	{{-- .json-input-element #json-$name use handlebars or other script to display content here --}}
 </div>
