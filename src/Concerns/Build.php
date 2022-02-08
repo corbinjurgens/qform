@@ -15,10 +15,8 @@ trait Build
 	/**
 	 * Load errors from session, if empty set as an empty Error Bag
 	 * In the same way template $errors variable works
-	 *
-	 *
 	 */
-	protected function loadErrors(){
+	protected static function loadErrors(){
 		if (isset(static::$errors)){
 			return;
 		}
@@ -30,8 +28,8 @@ trait Build
 	 * Get single error for current input
 	 *
 	 */
-	public function getError($key){
-		$this->loadErrors();
+	public static function getError($key){
+		static::loadErrors();
 		if (static::$errors){
 			return static::$errors->first($key);
 		}
@@ -42,8 +40,8 @@ trait Build
 	 * Get error array for current input
 	 *
 	 */
-	public function getErrorArray($key){
-		$this->loadErrors();
+	public static function getErrorArray($key){
+		static::loadErrors();
 		$errors = static::$errors->get($key . '.*');
 		return $errors ?? [];
 		

@@ -1,14 +1,14 @@
 @if ($type == 'hidden')
-	<input type="{{ $type }}" value="{{ $value }}" name="{{ $name }}" {{ $attributes->merge(['id' => 'input-' . $id_fallback]) }}>
+	<input type="{{ $type }}" value="{{ $hide ? '' : $value }}" name="{{ $name }}" {{ $attributes->merge(['id' => 'input-' . $id_fallback]) }}>
 @else
-	@if ($surround ?? false)<div class="@if($inline && in_array($type, ['checkbox', 'radio'])) form-check-inline @else form-group @endif
+	@if ($group ?? false)<div class="@if($inline && in_array($type, ['checkbox', 'radio'])) form-check-inline @else form-group @endif
 		@if ($type == 'checkbox' && !is_array($variables)) form-check @endif">@endif
 
 		@include('qform::labels')
 		
 		@if ($type == 'textarea')
 			<label @include('qform::label-attr')>{{ $title }}@include('qform::label-postfix')</label>
-			<textarea @include('qform::input-attr', ['alt_value' => false, 'class' => 'form-control'])>{{ $value }}</textarea>
+			<textarea @include('qform::input-attr', ['hide' => true, 'class' => 'form-control'])>{{ $hide ? '' : $value }}</textarea>
 			
 			
 		@elseif ($type == 'select')
@@ -28,14 +28,14 @@
 					$attributes['id'] = $attributes->get('id', 'input-' . $id_fallback) . (isset($loop) ? '-' . $loop->iteration : '');
 				@endphp
 				<div class="form-check form-check-inline">
-					<input @if ( in_array($key, is_array($value) ? $value : [], true) ) checked="" @endif @include('qform::input-attr', ['name' => $name . '[]', 'alt_value' => $key, 'aria_describedby' => $attributes->get('id', $id_fallback) . '-group', 'class' => 'form-check-input'])>
+					<input @if ( in_array($key, is_array($value) ? $value : [], true) ) checked="" @endif @include('qform::input-attr', ['name' => $name . '[]', 'value' => $key, 'aria_describedby' => $attributes->get('id', $id_fallback) . '-group', 'class' => 'form-check-input'])>
 					<label class="form-check-label" @include('qform::label-attr')>{{ $variable ?? $key }}</label>
 				</div>
 			@endforeach
 			</fieldset>
 		@elseif ($type == 'checkbox')
 		{{-- Value always 1, acting as boolean --}}
-			<input @if ( $value ) checked="" @endif @include('qform::input-attr', ['alt_value' => 1, 'class' => 'form-check-input'])>
+			<input @if ( $value ) checked="" @endif @include('qform::input-attr', ['value' => 1, 'class' => 'form-check-input'])>
 			<label class="form-check-label" @include('qform::label-attr')>{{ $title }}@include('qform::label-postfix')</label>
 			
 		@elseif ($type == 'radio' && is_array($variables))
@@ -53,7 +53,7 @@
 			</fieldset>
 		@elseif ($type == 'file')
 			<label @include('qform::label-attr')>{{ $title }}@include('qform::label-postfix')</label>
-			<input @include('qform::input-attr', ['alt_value' => false, 'class' => 'form-control-file'])>
+			<input @include('qform::input-attr', ['hide' => true, 'class' => 'form-control-file'])>
 		
 		@elseif ($type == 'json')
 			<label id="label-{{ $attributes->get('id', $id_fallback) }}">{{ $title }}@include('qform::label-postfix')</label>
@@ -68,5 +68,5 @@
 		
 		@if ($type != 'json')<small id="{{ $attributes->get('id', $id_fallback) }}-help" class="form-text text-muted"><x-qform-error :message="$error"/>{!! $subtitle !!}</small>@endif
 		
-	@if ($surround ?? false)</div>@endif
+	@if ($group ?? false)</div>@endif
 @endif

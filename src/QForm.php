@@ -11,7 +11,6 @@ use Str;
 class QForm {
 	
 	use Concerns\Template;
-	use Concerns\Data;
 	use Concerns\Tools;
 	use Concerns\Build;
 	use Concerns\CrossInput;

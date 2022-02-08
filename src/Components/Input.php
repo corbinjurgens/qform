@@ -11,6 +11,9 @@ use Corbinjurgens\QForm\Concerns;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
+use Corbinjurgens\QForm\QForm;
+
+
 class Input extends Component
 {
 	use Concerns\Template;
@@ -34,38 +37,40 @@ class Input extends Component
 	public $errors = NULL;
 
 	public $int = null;
+	public $group = null;
 
-    public function __construct($data = null, $value = null, $type = 'text', $name = null, $column = null, $default = null, $title = null, $subtitle = null, $hide = NULL, $hide_error = false, $variables = null, $variableAttributes = null, $template = null, $int = false)
+    public function __construct($data = null, $value = null, $type = 'text', $name = null, $column = null, $default = null, $title = null, $subtitle = null, $hide = false, $hide_error = false, $variables = null, $variableAttributes = null, $template = null, $int = false, $group = false)
     {
 
-		$names = static::stripName($name);
+		$this->data = $data ?? QForm::getData();
+		$names = QForm::stripName($name);
 		$this->basename = end($names);
 		reset($names);
 		$this->column = $column ?? $this->basename;
 		$this->id_fallback = join('-', $names);
 
-		$dot = static::buildDot($names);
-		$this->value = $hide ? $default : ($value ?? static::resolveValue($data, $this->column, $dot, $default, $hide));
-		$this->int = $int;
+		$dot = QForm::buildDot($names);
+		$this->value = $value ?? QForm::resolveValue($this->data, $this->column, $dot, $default);
+		$this->int = (bool) $int;
 		if ($this->int && is_numeric($this->value)){
 			$this->value = (int) $this->value;
 		}
 		
-		$this->data = $data;
 		$this->type = $type;
-		$this->name = static::buildName($names);
+		$this->name = QForm::buildName($names);
 		$this->default = $default;
 		$this->title = $title ?? Str::title($this->basename);
 		$this->subtitle = $subtitle;
-		$this->hide = $hide;
-		$this->hide_error = $hide_error;
+		$this->hide = (bool) $hide;
+		$this->hide_error = (bool) $hide_error;
 		$this->variables = $variables;
 		$this->variableAttributes = $variableAttributes;
 
 		$this->template($template);
 
-		$this->error = \QForm::getError($dot);
-		$this->errors = \QForm::getErrorArray($dot);
+		$this->error = QForm::getError($dot);
+		$this->errors = QForm::getErrorArray($dot);
+		$this->group = (bool) $group;
 
 		
 
@@ -83,74 +88,6 @@ class Input extends Component
 		 */
     }
 
-	public static function resolveValue($data, $column, $name = null, $default = null) {
-		return old($name, static::pullValue($data, $column, $default));
-	}
-
-	public static function pullValue($data, $column, $default){
-		if ($data instanceof Model && !$data->exists){
-			// Model is not yet created so should pass default
-			return $default;
-		}
-		return Arr::get($data, $column, $default);
-	}
-	
-	/**
-	 * If the name is passed directly, we will need to check it is not an array,
-	 * and if it is, get the basename
-	 *
-	 * @param string|null $name
-	 */
-	public static function stripName($name){
-		if (strpos($name, '[') === false){
-			return [$name];
-		}
-		$mode = "CHR";
-		$started = false;
-		$characters = mb_str_split($name);
-		$parts = [];
-		$curr = "";
-		foreach($characters as $character){
-			if ($mode == "ESC"){
-				$curr .= $character;
-				$mode = "CHR";
-				continue;
-			}
-			if ($character === "\\"){
-				$mode = "ESC";
-				continue;
-			}
-
-			if ($character = "["){
-				if (!$started){
-					$parts[] = $curr;
-					$started = true;
-				}
-				$curr = "";
-			}else if ($character = "]"){
-				$parts[] = $curr;
-			}else{
-				$curr .= $character;
-			}
-		}
-		return $parts;
-	}
-
-	public static function buildName($names){
-		$names = array_map(function($name){
-			return str_replace(['[', ']'], ['\\[', '\\]'], $name);
-		},$names);
-
-		$build = array_shift($names);
-		if ($names){
-			$build .= '[' . join('][', $names) . ']';
-		}
-		return $build;
-	}
-
-	public static function buildDot($names){
-		return join('.', $names);
-	}
     /**
      * Get the view / contents that represent the component.
      *

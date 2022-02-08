@@ -24,20 +24,17 @@ trait Template
 	
 	/**
 	 * Get template with underscore ready to append to filename
-	 *
-	 *
 	 */
 	public function getTemplate(){
-		if ($this->template){
-			return '_' . $this->template;
+		$find = $this->template ?? QForm::$global_template;
+		if ($find){
+			return '_' . $find;
 		}
 		return '';
 	}
 	
 	/**
 	 * Get template with underscore ready to append to filename
-	 *
-	 *
 	 */
 	public function getTemplateSuffix(){
 		return $this->template;
@@ -51,6 +48,6 @@ trait Template
 	 * it will look to this value
 	 */
 	public static function setGlobalTemplate(string $suffix = null){
-		self::$global_template = $suffix;
+		QForm::$global_template = $suffix;
 	}
 }

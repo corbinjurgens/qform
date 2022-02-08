@@ -9,6 +9,10 @@ use Corbinjurgens\QForm\Components\Input;
 use Corbinjurgens\QForm\Components\Submit;
 use Corbinjurgens\QForm\Components\Form;
 
+use Illuminate\Support\Facades\Blade;
+
+use Corbinjurgens\QForm\QForm;
+
 class ServiceProvider extends BaseServiceProvider
 {
 	
@@ -45,7 +49,30 @@ class ServiceProvider extends BaseServiceProvider
         __DIR__.'/resources/views' => resource_path('views/vendor/' . self::$name),
       ], self::$name . '-views');
 	   
-	   
+      Blade::directive('QFormTemplate', function ($template) {
+        $class = QForm::class;
+        return "<?php $class::setGlobalTemplate($template); ?>";
+      });
+
+      Blade::directive('QFormData', function ($data) {
+        $class = QForm::class;
+        return "<?php $class::data($data); ?>";
+      });
+
+      Blade::directive('QFormPrefix', function ($prefix = 'null') {
+        $class = QForm::class;
+        return "<?php $class::prefix($prefix); ?>";
+      });
+
+      Blade::directive('QFormPrefixIn', function ($prefix) {
+        $class = QForm::class;
+        return "<?php $class::prefixIn($prefix); ?>";
+      });
+
+      Blade::directive('QFormPrefixOut', function () {
+        $class = QForm::class;
+        return "<?php $class::prefixOut(); ?>";
+      });
 	 
 		
     }

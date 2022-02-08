@@ -15,7 +15,7 @@
 type="{{ $type }}"
 name="{{ $name }}"
 {{-- Alt value used when including loops etc. Or textarea is set as false meaning dont show value at all --}}
-@if(($alt_value ?? null) !== false)value="{{ (isset($alt_value) ? $alt_value : $value)}}"@endif
+@if(!$hide)value="{{ $value }}"@endif
 @if(($aria_describedby ?? null) !== false)aria-describedby="{{ ($aria_describedby ?? null) ? $aria_describedby : $attributes->get('id', $id_fallback) }}-help"@endif
 
 {{ $attributes->class(['input-' . $basename, 'required' => $attributes->has('required'), $class ?? '' => isset($class)])->merge(['id' => 'input-' . $id_fallback]) }}
