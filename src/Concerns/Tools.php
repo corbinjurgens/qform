@@ -4,44 +4,114 @@ namespace Corbinjurgens\QForm\Concerns;
 
 use Corbinjurgens\QForm\ServiceProvider as S;
 
+use Illuminate\Container\Container;
+
+use Corbinjurgens\QForm\Concerns\ComponentTagCompiler;
+use Illuminate\Support\Str;
+
+
 trait Tools
 {
-	
+	protected static $compiler;
+
 	/**
-	 * Gets the column text and returns array
-	 * Looks in columns.php $table_path, and optionally form specific forms.php $form_path 
-	 * This is not necessary when using Qform::init $text parameter as a string pointer such as 'forms.signup' combined with function guide('users'), but may be helpful for 
-	 * retrieving validations column names
-	 * However the result can be used for $text and $guides
-	 *
-	 * @param string $table_path Esentialy the table name
-	 * @param string|null $form_path If you want to have more specific column text for a form, enter the form name of where to look here
-	 * @param string $general_path Where $table_path will look in
-	 * @param string $specific_path Where $form_path will look in
-	 * 
+	 * So we can use partitionDataAndAttributes
 	 */
-	public static function langCombine($table_path, $form_path = null, $general_path = 'columns.', $specific_path = 'forms.'){
-		$table_array = __($general_path.$table_path);
-		if (!is_array($table_array)){
-			$table_array = [];
-		}
-		if ($form_path === null) return \Arr::dot($table_array);
-		$form_array = __($specific_path.$form_path);
-		if (!is_array($form_array)){
-			$form_array = [];
-		}
-		return \Arr::dot(array_replace($table_array, $form_array));
-		
-	}
-	
+	public static function compiler()
+    {
+        if (! static::$compiler) {
+            static::$compiler = new ComponentTagCompiler(
+                Container::getInstance()->make('blade.compiler')->getClassComponentAliases(),
+                Container::getInstance()->make('blade.compiler')->getClassComponentNamespaces(),
+                Container::getInstance()->make('blade.compiler')
+            );
+        }
+
+        return static::$compiler;
+    }
+
 	/**
-	 * Used for guide mostly, to only show translations that exists
-	 * Doesnt work for json type transations, only php array key type
-	 *
-	 * @param string $path
+	 * Single dimensionsional string array to valid array
+	 * Allows you to retain the true values as raw php
 	 */
-	public static function transNull($path){
-		$trans = __($path);
-		return ($trans != $path) ? $trans : null;
+	public static function arrayStringtoArray(string $string, $escape = "\\"){
+		$exceptSplitQuotes = function($string, $compare, $escape){
+			$res = [];
+			$curr = '';
+			$until = null;
+			$escaping = false;
+			$extra = mb_strlen($compare) - 1;
+			
+
+			$strings = mb_str_split($string);
+			$skip = 0;
+			foreach ($strings as $index => $char){
+				if ($skip){
+					$skip--;
+					continue;
+				}
+
+				if ($escaping){
+					$curr .= $char;
+					$escaping = false;
+					continue;
+				}
+
+				if ($until){
+					if ($char === $escape){
+						$escaping = true;
+					}else if ($char === $until){
+						$until = null;
+					}
+					$curr .= $char;
+					continue;
+				}
+
+				if ($char === "'" || $char === "\""){
+					$until = $char;
+					$curr .= $char;
+					continue;
+				}
+
+				$to_compare = $char;
+				for ($i = 0; $i<$extra; $i++){
+					$to_compare .= $strings[$index + $i + 1] ?? '';
+				}
+				if ($to_compare === $compare){
+					$res[] = $curr;
+					$curr = null;
+					$skip = $extra;
+					continue;
+				}
+			
+				$curr .= $char;
+			}
+
+			if (isset($curr)){
+				$res[] = $curr;
+			}
+
+			return $res;
+		};
+
+		if (stripos($string, 'array(') === 0){
+			$string = mb_substr($string, 6, -1);
+		}else if (strpos($string, '[') === 0){
+			$string = mb_substr($string, 1, -1);
+		}
+
+		$pairs = $exceptSplitQuotes($string, ',', $escape);
+		$results = [];
+		foreach($pairs as $pair){
+			[$key, $value] = $exceptSplitQuotes($pair, '=>', $escape);
+			$key = trim($key);
+			$value = trim($value);
+			if (Str::startsWith($key, ['"', '\''])){
+				$key = substr($key, 1, -1);
+			}
+			$results[$key] = $value;
+		}
+		return $results;
+
 	}
 }

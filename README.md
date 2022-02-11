@@ -112,6 +112,20 @@ You can also set data directly for each input
 <x-qform-input :data="['test' => '1', 'test2' => 2]" type="text" name="prefix[test_other]" column="test2"/>
 ```
 
+## Bonus
+
+You can create an input using a blade function
+
+```html
+@QFormInput(['type' => 'text', 'name' => 'country', 'data' => $user])
+```
+
+Is the alternative method to 
+
+```html
+<x-qform-input type="text" name="country" :data="$user"/>
+```
+
 ## Other functions
 
 Use the prefix function and pass an array (or null to clear), and it will automatically prefix the inputs name attribute
@@ -161,7 +175,7 @@ Make a copy of the template, and add suffix for example `input.blade.php` become
 
 # Other stuff
 
-You can quickly create forms with the <x-qform-form action="..." > <x-qform-form /> component. method will default to POST and also provide @csrf and @method when necessary
+You can quickly create forms with the `<x-qform-form action="..." > <x-qform-form />` component. method will default to POST and also provide @csrf and @method when necessary
 
 A bunch of features aren't documented here
 
