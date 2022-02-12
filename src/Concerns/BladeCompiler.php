@@ -2,11 +2,7 @@
 
 namespace Corbinjurgens\QForm\Concerns;
 
-use Corbinjurgens\QForm\ServiceProvider as S;
-use Illuminate\Support\Str;
-
 use Illuminate\View\Compilers\BladeCompiler as Base;
-use Corbinjurgens\QForm\Concerns\ComponentTagCompiler;
 
 
 /**

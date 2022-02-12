@@ -12,23 +12,6 @@ use Illuminate\Support\Str;
 
 trait Tools
 {
-	protected static $compiler;
-
-	/**
-	 * So we can use partitionDataAndAttributes
-	 */
-	public static function compiler()
-    {
-        if (! static::$compiler) {
-            static::$compiler = new ComponentTagCompiler(
-                Container::getInstance()->make('blade.compiler')->getClassComponentAliases(),
-                Container::getInstance()->make('blade.compiler')->getClassComponentNamespaces(),
-                Container::getInstance()->make('blade.compiler')
-            );
-        }
-
-        return static::$compiler;
-    }
 
 	/**
 	 * Single dimensionsional string array to valid array

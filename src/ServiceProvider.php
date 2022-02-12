@@ -11,12 +11,12 @@ use Corbinjurgens\QForm\Components\Form;
 
 use Illuminate\Support\Facades\Blade;
 
-
 use Illuminate\Container\Container;
 use Illuminate\View\DynamicComponent;
 
 use Corbinjurgens\QForm\QForm;
 use Corbinjurgens\QForm\Concerns\BladeCompiler;
+use Corbinjurgens\QForm\Concerns\ComponentTagCompiler;
 
 class ServiceProvider extends BaseServiceProvider
 {
@@ -31,11 +31,36 @@ class ServiceProvider extends BaseServiceProvider
     {
 		
 		  $this->app->bind(self::$name, QForm::class);
-      $this->app->singleton('blade.qformcompiler', function ($app) {
+      $this->app->singleton('blade.qformcompiler', function ($app){
         return tap(new BladeCompiler($app['files'], $app['config']['view.compiled']), function ($blade) {
             $blade->component('dynamic-component', DynamicComponent::class);
         });
-    });
+      });
+
+      $this->app->singleton('blade.qformtagcompiler', function ($app){
+        if (version_compare($app->version(), '8.0.0') >= 0){
+          $res = new ComponentTagCompiler(
+            $app->make('blade.compiler')->getClassComponentAliases(),
+            $app->make('blade.compiler')->getClassComponentNamespaces(),
+            $app->make('blade.compiler')
+          );
+        }else if (version_compare($app->version(), '7.9.2') >= 0){
+          $res = new ComponentTagCompiler(
+            $app->make('blade.compiler')->getClassComponentAliases(),
+            $app->make('blade.compiler')
+          );
+        }else if (version_compare($app->version(), '7.9.0') >= 0){
+          $res = new ComponentTagCompiler(
+            $app->make('blade.compiler'),
+            $app->make('blade.compiler')->getClassComponentAliases()
+          );
+        }else{
+          $res = new ComponentTagCompiler(
+            $app->make('blade.compiler')->getClassComponentAliases()
+          );
+        }
+        return $res;
+      });
 		
     }
 
@@ -60,9 +85,8 @@ class ServiceProvider extends BaseServiceProvider
       ], self::$name . '-views');
 
       Blade::directive('QFormInput', function ($attributes) {
-        $alias = 'qform-input';
         $attributes = QForm::arrayStringtoArray($attributes);
-        $compiled = QForm::compiler()->customCompile($alias, $attributes);
+        $compiled = Container::getInstance()->make('blade.qformtagcompiler')->customCompile('qform-input', $attributes);
         return Container::getInstance()->make('blade.qformcompiler')->parseTokens($compiled);
       });
 
