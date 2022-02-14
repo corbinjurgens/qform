@@ -1,28 +1,28 @@
 # Introduction
 
-Created for personal use, and is not well documented or tidy. Feel free to use / extend
+Confirmed working on Laravel 7.0.0, 8.0.0 and 8.73.2 projects
 
-In this version, everything has been greatly simplified. Automatic input title and description fetching is no longer supported.
+Created for personal use, feel free to use / extend
 
 QForm for Laravel does a bunch of html form stuff, making use of Laravel components
 - Create most types of html inputs with a single component
 - Automatically get old() values and errors
-- Make use of the template functions to automatically prefix your input form name attributes
-- Customizable template
+- Make use of the additional functions to automatically prefix your input form name attributes
+- Customizable templates
 - In the provided base Bootstrap 4 template, it makes some attempts to provide labelling, error and other accesibility features.
 
 ```html
 <x-qform-input type="text" name="name" title="This is the name input" />
 <x-qform-input type="email" name="email" title="This is the email input" />
-<x-qform-input type="text" name="level" title="This is the level input" :variables="[0 => 'User', '1' => 'Admin']" int />
+<x-qform-input type="select" name="level" title="This is the level input" :variables="[0 => 'User', '1' => 'Admin']" int />
 ```
 
 - The input will automatically look for errors and old values based on value given by name
-- The input will look to array or model given by @QFormData() or "data" attribute to get input value
+- The input will look to array or model given by @QFormData() or directly from the "data" attribute to get input value
 
 
 ## Warnings
-Input uses strict comparisons. If your input value is an integer, and is declared as an integer in the variables array, you will need to set the "int" attribute so that it will be cast as an integer before comparison
+For select and other variable input types, strict comparison is used. If your input value is an integer, and is declared as an integer in the variables array, you will need to set the "int" attribute so that it will be cast as an integer before comparison
 
 # Setup
 ## Composer
@@ -71,7 +71,7 @@ Simple inputs
 <x-qform-input type="checkbox" name="name2" :value="$value" :title="__('column.text2')" />
 ```
 
-Array input, ie. anything that has, or can have multiple options
+Array input, ie. anything that has multiple options
 
 You should be sure to set the int attribute if your variable keys are integer, so that the value can be compared correctly
 
@@ -80,9 +80,9 @@ You should be sure to set the int attribute if your variable keys are integer, s
 // $variables = [1 => 'Option 1', 2 => 'Option 2', 3 => 'Option 3'];
 <x-qform-input type="select" name="name" :value="$value" :title="__('column.text')" :variables="$variables" int />
 
-// $value = 1;
-// $variables = [1 => 'Option 1', 2 => 'Option 2', 3 => 'Option 3'];
-<x-qform-input type="radio" name="name" :value="$value" :title="__('column.text')" :variables="$variables" int />
+// $value = 'option1';
+// $variables = ['option1' => 'Option 1', 'option2' => 'Option 2', 'option3' => 'Option 3'];
+<x-qform-input type="radio" name="name" :value="$value" :title="__('column.text')" :variables="$variables" />
 
 // $value = [1, 2, 3]; If a checkbox has an array given for :variables, it will behave differently and expect :value to also be array
 // $variables = [1 => 'Option 1', 2 => 'Option 2', 3 => 'Option 3'];
@@ -181,4 +181,4 @@ A bunch of features aren't documented here
 
 # Notes
 
-This code is untested and not to any standard.
+This code is not thoroughly and not to any standard. Provided as is.
