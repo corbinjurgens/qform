@@ -1,6 +1,6 @@
 @if ((isset($loop) && $loop->first) || (!isset($loop)))
-	@if ($attributes->has('required')) required @endif
-	aria-required="{{ $attributes->has('required') ? 'true' : 'false' }}"
+	@if ($attributes->get('required')) required @endif
+	aria-required="{{ $attributes->get('required') ? 'true' : 'false' }}"
 	aria-invalid="{{ $error ? 'true' : 'false' }}"
 @endif
 
@@ -18,4 +18,14 @@ name="{{ $name }}"
 @if(!$hide)value="{{ $value }}"@endif
 @if(($aria_describedby ?? null) !== false)aria-describedby="{{ ($aria_describedby ?? null) ? $aria_describedby : $attributes->get('id', $id_fallback) }}-help"@endif
 
-{{ $attributes->class(['input-' . $basename, 'required' => $attributes->has('required'), $class ?? '' => isset($class)])->merge(['id' => 'input-' . $id_fallback]) }}
+@php
+	// $attributes class function not in older versions
+	if ($attributes->get('required') == true){
+		$attributes = $attributes->merge(['class' => 'required']);
+	}
+	if (isset($class)){
+		$attributes = $attributes->merge(['class' => $class]);
+	}
+	$attributes = $attributes->merge(['class' => 'input-' . $basename, 'id' => 'input-' . $id_fallback]);
+@endphp
+{{ $attributes }}
